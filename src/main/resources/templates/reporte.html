@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reporte Inventario</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f6f8;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .btn {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #219150;
+        }
+
+        @media print {
+            .btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h2>Reporte de Inventario</h2>
+
+        <!-- CAMBIA ESTE LOGO -->
+        <img src="/logo.png" class="logo">
+    </div>
+
+    <p><strong>Fecha:</strong>
+        <span th:text="${#temporals.format(#temporals.createNow(),'dd/MM/yyyy')}"></span>
+    </p>
+
+    <table>
+        <tr>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Stock Sistema</th>
+            <th>Stock Fisico</th>
+            <th>Diferencia</th>
+            <th>Estado</th>
+        </tr>
+
+        <tr th:each="inv : ${inventarios}">
+            <td th:text="${inv.producto.codigo}"></td>
+            <td th:text="${inv.producto.descripcion}"></td>
+            <td th:text="${inv.stockSistema}"></td>
+            <td th:text="${inv.stockFisico}"></td>
+            <td th:text="${inv.diferencia}"></td>
+            <td th:text="${inv.estado}"></td>
+        </tr>
+
+    </table>
+
+    <button class="btn" onclick="window.print()">Imprimir</button>
+
+</div>
+
+</body>
+</html>
