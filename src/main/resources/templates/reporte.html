@@ -1,96 +1,250 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Reporte Inventario</title>
+    <title>Reporte de Inventario</title>
 
     <style>
+
         body {
-            font-family: Arial;
-            background-color: #f4f6f8;
+            font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
+            background:
+                    linear-gradient(rgba(255,255,255,0.93), rgba(255,255,255,0.93)),
+                    url('/img/logo.jfif');
+            background-size: cover;
+            background-attachment: fixed;
         }
 
         .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.96);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
         }
 
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-bottom: 3px solid #2f4159;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .logo {
-            height: 60px;
+            width: 110px;
         }
 
-        h2 {
+        h1 {
             color: #2c3e50;
+            margin: 0;
+            font-size: 38px;
+        }
+
+        .info {
+            margin-top: 10px;
+            font-size: 17px;
+            color: #444;
+        }
+
+        .resumen {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            flex: 1;
+            background: #f4f6f8;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #2f4159;
+            font-size: 18px;
+        }
+
+        .card p {
+            font-size: 25px;
+            margin-top: 10px;
+            font-weight: bold;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         th {
-            background-color: #3498db;
+            background-color: #2f4159;
             color: white;
-            padding: 10px;
+            padding: 12px;
+            font-size: 17px;
         }
 
         td {
-            padding: 8px;
-            border: 1px solid #ddd;
+            padding: 10px;
             text-align: center;
+            border-bottom: 1px solid #ddd;
         }
 
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #f7f7f7;
+        }
+
+        tr:hover {
+            background-color: #dfefff;
+        }
+
+        /* ESTADOS */
+
+        .falta {
+            background-color: #ffdddd;
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .sobra {
+            background-color: #ddffdd;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .igual {
+            background-color: #ddeaff;
+            color: #2980b9;
+            font-weight: bold;
         }
 
         .btn {
-            margin-top: 15px;
-            padding: 10px 15px;
+            margin-top: 25px;
+            padding: 12px 25px;
             background-color: #27ae60;
             color: white;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 5px;
+            font-size: 17px;
         }
 
         .btn:hover {
-            background-color: #219150;
+            background-color: #1e8449;
+        }
+
+        .firmas{
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 70px;
         }
 
         @media print {
+
             .btn {
                 display: none;
             }
+
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+        }
+        @media print {
+
+            body{
+                zoom: 100%;
+            }
+
+            h1{
+                font-size: 19px;
+            }
+
+            th{
+                font-size: 15px;
+                padding: 8px;
+            }
+
+            td{
+                font-size: 13px;
+                padding: 6px;
+            }
+
+            .logo{
+                width: 90px;
+            }
+
+            .firmas{
+                margin-top: 150px;
+                gap: 60px;
+            }
+
+            .firma{
+                width: 220px;
+            }
+
+            .btn{
+                display: none;
+            }
+
         }
     </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
+    <!-- ENCABEZADO -->
     <div class="header">
-        <h2>Reporte de Inventario</h2>
 
-        <!-- CAMBIA ESTE LOGO -->
-        <img src="/logo.png" class="logo">
+        <div>
+            <h1>Reporte de Inventario</h1>
+
+            <div class="info">
+                Fecha:
+                <span th:text="${#temporals.format(#temporals.createNow(),'dd/MM/yyyy')}"></span>
+            </div>
+        </div>
+
+        <img src="/img/logo.jfif" class="logo">
+
     </div>
 
-    <p><strong>Fecha:</strong>
-        <span th:text="${#temporals.format(#temporals.createNow(),'dd/MM/yyyy')}"></span>
-    </p>
+    <!--
+ <div class="resumen">
 
+     <div class="card">
+         <h3>Total Productos</h3>
+         <p th:text="${inventarios.size()}"></p>
+     </div>
+
+     <div class="card">
+         <h3>Sistema</h3>
+         <p>Inventario</p>
+     </div>
+
+     <div class="card">
+         <h3>Estado</h3>
+         <p>Activo</p>
+     </div>
+
+ </div>
+ -->
+      <!-- TABLA -->
     <table>
+
         <tr>
             <th>Codigo</th>
             <th>Descripcion</th>
@@ -101,19 +255,56 @@
         </tr>
 
         <tr th:each="inv : ${inventarios}">
+
             <td th:text="${inv.producto.codigo}"></td>
+
             <td th:text="${inv.producto.descripcion}"></td>
+
             <td th:text="${inv.stockSistema}"></td>
+
             <td th:text="${inv.stockFisico}"></td>
+
             <td th:text="${inv.diferencia}"></td>
-            <td th:text="${inv.estado}"></td>
+
+            <!--  COLOR SEGUN ESTADO -->
+            <td th:text="${inv.estado}"
+                th:classappend="
+                    ${inv.estado == 'Falta'} ? 'falta' :
+                    (${inv.estado == 'Sobra'} ? 'sobra' : 'igual')
+                ">
+            </td>
+
         </tr>
 
     </table>
 
-    <button class="btn" onclick="window.print()">Imprimir</button>
+    <!--  BOTON -->
+    <button class="btn" onclick="window.print()">
+        Imprimir
+    </button>
+
+    <div class="firmas">
+
+        <div class="firmas">
+
+            <div class="firma">
+                <div class="linea"></div>
+                <p>______________________</p>
+            </div>
+
+            <div class="firma">
+                <div class="linea"></div>
+                <p>______________________</p>
+            </div>
+
+        </div>
+
+    </div>
+
 
 </div>
 
+
 </body>
+
 </html>

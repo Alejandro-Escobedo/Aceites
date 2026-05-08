@@ -17,7 +17,7 @@ public class InventarioController {
     @Autowired
     private InventarioRepository inventarioRepository;
 
-    // 🔥 MOSTRAR INVENTARIO CON STOCK SISTEMA
+    //  MOSTRAR INVENTARIO CON STOCK SISTEMA
     @GetMapping("/inventario")
     public String verInventario(Model model) {
 
@@ -40,7 +40,7 @@ public class InventarioController {
         return "inventario";
     }
 
-    // 🔥 GUARDAR INVENTARIO
+    //  GUARDAR INVENTARIO
     @PostMapping("/guardar")
     public String guardar(@RequestParam List<Integer> id,
                           @RequestParam List<Double> stockFisico) {
@@ -69,7 +69,7 @@ public class InventarioController {
                         .orElse(null);
 
                 if (inv != null) {
-                    // 👉 actualizar el registro existente
+                    //  actualizar el registro existente
                     inv.setStockFisico(fisico);
                     inv.setDiferencia(diferencia);
                     inv.setEstado(estado);
@@ -82,7 +82,7 @@ public class InventarioController {
         return "redirect:/reporte";
     }
 
-    // 🔥 REPORTE SOLO ÚLTIMO POR PRODUCTO
+    //  REPORTE SOLO ÚLTIMO POR PRODUCTO
     @GetMapping("/reporte")
     public String reporte(Model model) {
 

@@ -14,7 +14,7 @@ public class Producto {
     private String descripcion;
     private String grado;
 
-    // 🔥 ESTE ES SOLO PARA MOSTRAR EN PANTALLA (NO BD)
+    //  ESTE ES SOLO PARA MOSTRAR EN PANTALLA (NO BD)
     @Transient
     private Double stockSistema;
 
