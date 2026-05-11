@@ -152,6 +152,55 @@
 
 </div>
 
+<!-- USUARIO LOGUEADO -->
+<div style="
+        width:97%;
+        margin:auto;
+        margin-bottom:15px;
+        background:white;
+        padding:10px;
+        border-radius:10px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+">
+
+    <div>
+        Usuario:
+        <b th:text="${#authentication.name}"></b>
+    </div>
+
+    <div>
+
+        Rol:
+
+        <b th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            Admin de admin
+        </b>
+
+        <b th:if="${#authorization.expression('hasRole(''OPERADOR'')')}">
+            Anciano
+        </b>
+
+        <b th:if="${#authorization.expression('hasRole(''VISOR'')')}">
+            Anciano 2
+        </b>
+
+    </div>
+
+    <a href="/logout"
+       style="
+       background:#c0392b;
+       color:white;
+       padding:8px 15px;
+       border-radius:8px;
+       text-decoration:none;
+       ">
+        Cerrar sesión
+    </a>
+
+</div>
+
 <div class="container">
 
     <form action="/guardar" method="post">
@@ -161,6 +210,10 @@
             <tr>
                 <th>Codigo</th>
                 <th>Descripcion</th>
+
+                <!-- NUEVO -->
+                <th>Stock Sistema</th>
+
                 <th>Stock Fisico</th>
             </tr>
 
@@ -172,50 +225,100 @@
 
                 <input type="hidden" name="id" th:value="${p.id}" />
 
+
+                <!-- STOCK SISTEMA -->
                 <td>
+
+                    <!-- SOLO ADMIN MODIFICA -->
+                    <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+
+                        <input type="number"
+                               step="0.01"
+                               name="stockSistema">
+
+                    </div>
+
+                    <!-- OPERADOR Y VISOR SOLO VEN -->
+                    <div th:if="${!#authorization.expression('hasRole(''ADMIN'')')}">
+
+                        <input type="number"
+                               step="0.01"
+                               disabled>
+
+                    </div>
+
+                </td>
+
+                <!-- STOCK FISICO -->
+                <td>
+
                     <input type="number"
                            step="0.01"
                            name="stockFisico"
-                           required>
+                           required
+
+                           th:readonly="${#authorization.expression('hasRole(''VISOR'')')}">
+
                 </td>
 
-            </tr>
+                    <!--   <input type="number"
+                             step="0.01"
+                             name="stockSistema"
 
-        </table>
+                             th:readonly="${!#authorization.expression('hasRole(''ADMIN'')')}">
 
-        <button class="btn" type="submit">
-            Guardar
-            <img src="/img/fotowilly.jpeg" width="10">
-        </button>
+                  </td>
 
-        <!-- BOTON REPORTE
-        <div style="margin-top:20px;">
+                  <td>
+                      <input type="number"
+                             step="0.01"
+                             name="stockFisico"
+                             required
 
-            <button type="button"
-                    class="btn"
-                    onclick="document.getElementById('fechaReporte').showPicker()">
+                             th:readonly="${#authorization.expression('hasRole(''VISOR'')')}">
+                  </td>-->
 
-                📅
+              </tr>
 
-            </button>
+          </table>
 
-            <input type="date"
-                   id="fechaReporte"
-                   style="
-            position:absolute;
-            opacity:0;
-            pointer-events:none;
-       ">
+          <button class="btn"
+                  type="submit"
 
-            <button type="button"
-                    class="btn"
-                    onclick="abrirReporte()">
+                  th:if="${!#authorization.expression('hasRole(''VISOR'')')}">
 
-                Ver Reporte
+              Guardar
+              <img src="/img/fotowilly.jpeg" width="10">
+          </button>
 
-            </button>
+          <!-- BOTON REPORTE
+          <div style="margin-top:20px;">
 
-        </div>-->
+              <button type="button"
+                      class="btn"
+                      onclick="document.getElementById('fechaReporte').showPicker()">
+
+                  📅
+
+              </button>
+
+              <input type="date"
+                     id="fechaReporte"
+                     style="
+              position:absolute;
+              opacity:0;
+              pointer-events:none;
+         ">
+
+              <button type="button"
+                      class="btn"
+                      onclick="abrirReporte()">
+
+                  Ver Reporte
+
+              </button>
+
+          </div>-->
 
     </form>
 

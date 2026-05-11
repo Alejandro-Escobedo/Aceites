@@ -53,13 +53,22 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/img/**").permitAll()
+
+                        .requestMatchers("/login").permitAll()
+
                         .requestMatchers("/inventario/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
 
                 .formLogin(form -> form
+
+                        .loginPage("/login")
+
                         .defaultSuccessUrl("/inventario", true)
+
                         .permitAll()
                 )
 
