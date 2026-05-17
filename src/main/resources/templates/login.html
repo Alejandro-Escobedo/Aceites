@@ -1,88 +1,106 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <title>Login - Inventario</title>
 
     <style>
 
-        body{
+        *{
             margin:0;
             padding:0;
-            font-family:Arial,sans-serif;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
 
-            background:
-                    linear-gradient(rgba(255,255,255,0.4),
-                    rgba(255,255,255,0.4)),
-                    url('/img/fondo-login.jpg');
+        body{
 
-            background-size:cover;
-            background-position:center;
             height:100vh;
 
             display:flex;
             justify-content:center;
             align-items:center;
+
+            background:
+                    linear-gradient(rgba(0,0,0,0.45),
+                    rgba(0,0,0,0.45)),
+
+                    url('/img/fondologin.png');
+
+            background-size:cover;
+            background-position:center;
         }
 
         .login-box{
 
             width:400px;
 
-            background:rgba(25,70,120,0.90);
+            background:rgba(5,25,55,0.88);
 
-            padding:30px;
+            padding:40px;
 
-            border-radius:15px;
+            border-radius:20px;
 
-            box-shadow:0 0 20px rgba(0,0,0,0.4);
+            position:relative;
 
-            text-align:center;
+            box-shadow:
+                    0 0 25px rgba(0,0,0,0.5);
 
-            color:white;
+            backdrop-filter: blur(5px);
         }
 
-        .logo{
+        .logo-container{
 
-            width:120px;
+            position:absolute;
 
-            margin-top:-90px;
+            top:-55px;
+            left:50%;
 
-            margin-bottom:10px;
+            transform:translateX(-50%);
+
+            width:110px;
+            height:110px;
 
             background:white;
 
-            border-radius:100px;
+            border-radius:50%;
 
-            padding:10px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
 
-            box-shadow:0 0 10px rgba(0,0,0,0.4);
+            box-shadow:
+                    0 0 20px rgba(255,255,255,0.8);
+        }
+
+        .logo-container img{
+
+            width:75px;
         }
 
         h1{
 
-            margin-bottom:30px;
+            color:white;
 
-            font-size:50px;
+            text-align:center;
+
+            margin-top:40px;
+            margin-bottom:40px;
+
+            font-size:55px;
         }
 
-        .input-box{
+        label{
 
-            text-align:left;
-
-            margin-bottom:20px;
-        }
-
-        .input-box label{
+            color:white;
 
             display:block;
 
             margin-bottom:8px;
 
-            font-size:20px;
+            font-size:22px;
         }
 
-        .input-box input{
+        input{
 
             width:100%;
 
@@ -90,26 +108,34 @@
 
             border:none;
 
-            border-radius:8px;
+            border-radius:10px;
+
+            margin-bottom:20px;
 
             font-size:18px;
-
-            box-sizing:border-box;
         }
 
-        .btn{
+        input:focus{
+
+            outline:none;
+
+            box-shadow:
+                    0 0 10px #2ecc71;
+        }
+
+        button{
 
             width:100%;
 
             padding:14px;
 
-            background:#0d6efd;
-
-            color:white;
-
             border:none;
 
-            border-radius:8px;
+            border-radius:10px;
+
+            background:#43c02a;
+
+            color:white;
 
             font-size:22px;
 
@@ -118,20 +144,22 @@
             transition:0.3s;
         }
 
-        .btn:hover{
+        button:hover{
 
-            background:#0b5ed7;
+            background:#35a51f;
+
+            transform:scale(1.02);
         }
 
         .error{
 
-            background:#dc3545;
+            color:#ff7675;
 
-            padding:10px;
-
-            border-radius:8px;
+            text-align:center;
 
             margin-bottom:15px;
+
+            font-size:16px;
         }
 
     </style>
@@ -142,11 +170,19 @@
 
 <div class="login-box">
 
-    <img src="/img/logo.jfif" class="logo">
+    <div class="logo-container">
 
-    <h1>Inventario de Aceites</h1>
+        <img src="/img/logo.jfif">
 
-    <div th:if="${param.error}" class="error">
+    </div>
+
+    <h1>
+        Inventario de Aceites
+    </h1>
+
+    <!-- ERROR LOGIN -->
+    <div class="error"
+         th:if="${param.error}">
 
         Usuario o contraseña incorrectos
 
@@ -154,27 +190,19 @@
 
     <form th:action="@{/login}" method="post">
 
-        <div class="input-box">
+        <label>Usuario</label>
 
-            <label>Usuario</label>
+        <input type="text"
+               name="username"
+               required>
 
-            <input type="text"
-                   name="username"
-                   required>
+        <label>Contraseña</label>
 
-        </div>
+        <input type="password"
+               name="password"
+               required>
 
-        <div class="input-box">
-
-            <label>Contraseña</label>
-
-            <input type="password"
-                   name="password"
-                   required>
-
-        </div>
-
-        <button class="btn" type="submit">
+        <button type="submit">
 
             Ingresar
 
@@ -185,5 +213,4 @@
 </div>
 
 </body>
-
 </html>
