@@ -255,9 +255,8 @@
                     <input type="number"
                            step="0.01"
                            name="stockFisico"
-                           required
 
-                           th:readonly="${#authorization.expression('hasRole(''VISOR'')')}">
+                           th:required="${!#authorization.expression('hasRole(''ADMIN'')')}">
 
                 </td>
 

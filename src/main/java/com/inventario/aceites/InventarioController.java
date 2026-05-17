@@ -17,7 +17,7 @@ public class InventarioController {
     @Autowired
     private InventarioRepository inventarioRepository;
 
-    //  MOSTRAR INVENTARIO CON STOCK SISTEMA
+    // MOSTRAR INVENTARIO CON STOCK SISTEMA
     @GetMapping("/inventario")
     public String verInventario(Model model) {
 
@@ -30,51 +30,135 @@ public class InventarioController {
                     .orElse(null);
 
             if (ultimo != null) {
+
                 p.setStockSistema(ultimo.getStockSistema());
+
             } else {
+
                 p.setStockSistema(0.0);
             }
         }
 
         model.addAttribute("productos", productos);
+
         return "inventario";
     }
 
-    //  GUARDAR INVENTARIO
+    // GUARDAR INVENTARIO
     @PostMapping("/guardar")
     public String guardar(@RequestParam List<Integer> id,
-                          @RequestParam List<Double> stockFisico) {
+
+                          @RequestParam(required = false)
+                          List<Double> stockSistema,
+
+                          @RequestParam(required = false)
+                          List<Double> stockFisico,
+
+                          java.security.Principal principal) {
+
+        boolean esAdmin =
+                principal.getName().equals("Alejandro");
 
         for (int i = 0; i < id.size(); i++) {
 
-            Producto p = productoRepository.findById(id.get(i)).orElse(null);
+            Producto p = productoRepository
+                    .findById(id.get(i))
+                    .orElse(null);
 
             if (p != null) {
 
-                Inventario ultimo = inventarioRepository
-                        .findTopByProducto_IdAndStockFisicoIsNullOrderByFechaDesc(p.getId())
-                        .orElse(null);
+                // =========================
+                // ADMIN
+                // =========================
+                if (esAdmin) {
 
-                double sistema = (ultimo != null) ? ultimo.getStockSistema() : 0;
-                double fisico = stockFisico.get(i);
-                double diferencia = Math.round((fisico - sistema) * 100.0) / 100.0;
+                    if (stockSistema != null
+                            && stockSistema.size() > i
+                            && stockSistema.get(i) != null) {
 
-                String estado;
-                if (fisico > sistema) estado = "Sobra";
-                else if (fisico < sistema) estado = "Falta";
-                else estado = "Igual";
+                        Inventario nuevo = new Inventario();
 
-                Inventario inv = inventarioRepository
-                        .findTopByProducto_IdAndStockFisicoIsNullOrderByFechaDesc(p.getId())
-                        .orElse(null);
+                        nuevo.setProducto(p);
+                        nuevo.setFecha(LocalDate.now());
+                        nuevo.setStockSistema(stockSistema.get(i));
 
-                if (inv != null) {
-                    //  actualizar el registro existente
-                    inv.setStockFisico(fisico);
-                    inv.setDiferencia(diferencia);
-                    inv.setEstado(estado);
+                        // ADMIN TAMBIEN PUEDE LLENAR STOCK FISICO
+                        if (stockFisico != null
+                                && stockFisico.size() > i
+                                && stockFisico.get(i) != null) {
 
-                    inventarioRepository.save(inv);
+                            double fisico = stockFisico.get(i);
+
+                            double diferencia =
+                                    Math.round((fisico - stockSistema.get(i)) * 100.0) / 100.0;
+
+                            String estado;
+
+                            if (fisico > stockSistema.get(i)) {
+
+                                estado = "Sobra";
+
+                            } else if (fisico < stockSistema.get(i)) {
+
+                                estado = "Falta";
+
+                            } else {
+
+                                estado = "Igual";
+                            }
+
+                            nuevo.setStockFisico(fisico);
+                            nuevo.setDiferencia(diferencia);
+                            nuevo.setEstado(estado);
+                        }
+
+                        inventarioRepository.save(nuevo);
+                    }
+
+                }
+
+                // =========================
+                // OPERADOR
+                // =========================
+                else {
+
+                    Inventario ultimo = inventarioRepository
+                            .findTopByProducto_IdAndStockFisicoIsNullOrderByFechaDesc(p.getId())
+                            .orElse(null);
+
+                    if (ultimo != null
+                            && stockFisico != null
+                            && stockFisico.size() > i
+                            && stockFisico.get(i) != null) {
+
+                        double sistema = ultimo.getStockSistema();
+
+                        double fisico = stockFisico.get(i);
+
+                        double diferencia =
+                                Math.round((fisico - sistema) * 100.0) / 100.0;
+
+                        String estado;
+
+                        if (fisico > sistema) {
+
+                            estado = "Sobra";
+
+                        } else if (fisico < sistema) {
+
+                            estado = "Falta";
+
+                        } else {
+
+                            estado = "Igual";
+                        }
+
+                        ultimo.setStockFisico(fisico);
+                        ultimo.setDiferencia(diferencia);
+                        ultimo.setEstado(estado);
+
+                        inventarioRepository.save(ultimo);
+                    }
                 }
             }
         }
@@ -82,21 +166,26 @@ public class InventarioController {
         return "redirect:/reporte";
     }
 
-    //  REPORTE SOLO ÚLTIMO POR PRODUCTO
+    // REPORTE SOLO ULTIMO POR PRODUCTO
     @GetMapping("/reporte")
     public String reporte(Model model) {
 
         List<Inventario> todos = inventarioRepository.findAll();
 
         List<Inventario> ultimos = new ArrayList<>();
+
         Set<Integer> usados = new HashSet<>();
 
         Collections.reverse(todos);
 
         for (Inventario inv : todos) {
+
             Integer idProducto = inv.getProducto().getId();
+
             if (!usados.contains(idProducto)) {
+
                 ultimos.add(inv);
+
                 usados.add(idProducto);
             }
         }
